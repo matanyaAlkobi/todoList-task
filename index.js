@@ -61,7 +61,3 @@ var activeTasks = createTaskList();
 todoSection.appendChild(activeTasks);
 handleInputEnter(input, activeTasks);
 todoSection.appendChild(div);
-// Completed tasks section
-var completedTitle = createElement("h3");
-completedTitle.textContent = "Completed Tasks";
-todoSection.appendChild(completedTitle);

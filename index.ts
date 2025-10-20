@@ -56,11 +56,10 @@ function handleInputEnter(
   });
 }
 
-
 // todo section
 const todoSection = createElement("section");
-todoSection.classList.add("todo-section")
-root?.appendChild(todoSection)
+todoSection.classList.add("todo-section");
+root?.appendChild(todoSection);
 
 // Title
 const title = createElement("h2");
@@ -79,8 +78,3 @@ todoSection.appendChild(activeTasks);
 
 handleInputEnter(input, activeTasks);
 todoSection.appendChild(div);
-
-// Completed tasks section
-const completedTitle = createElement("h3");
-completedTitle.textContent = "Completed Tasks";
-todoSection.appendChild(completedTitle);
