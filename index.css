@@ -39,13 +39,13 @@ ul {
 }
 
 li {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
   background-color: #f0f0f0;
   padding: 0.5rem 1rem;
   margin-bottom: 0.5rem;
   border-radius: 0.5rem;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
   transition: all 0.2s ease;
 }
 
@@ -56,8 +56,9 @@ li:hover {
   cursor: pointer;
 }
 
-label {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
+
+.completed {
+  text-decoration: line-through;
+  color: gray;
+  opacity: 0.9;
 }
