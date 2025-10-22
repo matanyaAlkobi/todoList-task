@@ -30,8 +30,7 @@ function handleInputEnter(
         localStorage.getItem("activeTasks") || "[]"
       );
       dataFromStorage.push(input.value.trim());
-      const newdata = JSON.stringify(dataFromStorage);
-      localStorage.setItem("activeTasks", newdata);
+      localStorage.setItem("activeTasks", JSON.stringify(dataFromStorage));
 
       createTaskElement(activeTasksList, completedTasklist, input.value.trim());
       input.value = "";
@@ -54,7 +53,7 @@ function createTaskElement(
 
   li.appendChild(checkbox);
   li.appendChild(text);
-
+  removeTask(li, activeTasksList, completedTasklist);
   if (!completed) {
     activeTasksList.appendChild(li);
   } else {
@@ -66,7 +65,6 @@ function createTaskElement(
   editTask(li);
   checkbox.addEventListener("change", () => {
     updateTaskStatus(activeTasksList, completedTasklist, checkbox.checked, li);
-    
     updateStorage(activeTasksList, completedTasklist);
   });
 }
@@ -134,12 +132,38 @@ function editTask(li: HTMLLIElement): void {
   });
 }
 
-function removeAll(){
-  localStorage.clear()
+function removeItemAndUpdatePage(element: HTMLElement, keyName: string) {
+  if (localStorage.getItem(keyName)) {
+    localStorage.removeItem(keyName);
+  }
+  element.innerHTML = "";
 }
 
-function removeTask(){
-  
+function removeTask(
+  li: HTMLLIElement,
+  activeTasksList: HTMLUListElement,
+  completedTasklist: HTMLUListElement
+) {
+  const removeButton = document.createElement("button");
+  removeButton.textContent = "Remove";
+  li.appendChild(removeButton);
+  removeButton.addEventListener("click", (event) => {
+    event.stopPropagation();
+    const clickedButton = event.target as HTMLElement;
+    clickedButton.parentElement?.remove();
+    updateStorage(activeTasksList, completedTasklist);
+  });
+}
+
+function clearAllButton(
+  activeTasksList: HTMLUListElement,
+  completedTasklist: HTMLUListElement
+) {
+  const clearAllButton = document.querySelector(".clear-all-btn");
+  clearAllButton?.addEventListener("click", () => {
+    removeItemAndUpdatePage(activeTasksList, "activeTasks");
+    removeItemAndUpdatePage(completedTasklist, "completedTasks");
+  });
 }
 
 function initTaskLogic() {
@@ -152,6 +176,7 @@ function initTaskLogic() {
   if (!input || !activeTasksList || !completedTasklist) return;
   loadTasksFromStorage(activeTasksList, completedTasklist);
   handleInputEnter(input, activeTasksList, completedTasklist);
+  clearAllButton(activeTasksList, completedTasklist);
 }
 
 initTaskLogic();

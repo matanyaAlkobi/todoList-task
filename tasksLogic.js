@@ -16,8 +16,7 @@ function handleInputEnter(input, activeTasksList, completedTasklist) {
         if (e.key === "Enter" && input.value.trim() !== "") {
             var dataFromStorage = JSON.parse(localStorage.getItem("activeTasks") || "[]");
             dataFromStorage.push(input.value.trim());
-            var newdata = JSON.stringify(dataFromStorage);
-            localStorage.setItem("activeTasks", newdata);
+            localStorage.setItem("activeTasks", JSON.stringify(dataFromStorage));
             createTaskElement(activeTasksList, completedTasklist, input.value.trim());
             input.value = "";
         }
@@ -32,6 +31,7 @@ function createTaskElement(activeTasksList, completedTasklist, textValue, comple
     text.textContent = textValue;
     li.appendChild(checkbox);
     li.appendChild(text);
+    removeTask(li, activeTasksList, completedTasklist);
     if (!completed) {
         activeTasksList.appendChild(li);
     }
@@ -95,6 +95,31 @@ function editTask(li) {
         text.addEventListener("keydown", keyHandler);
     });
 }
+function removeItemAndUpdatePage(element, keyName) {
+    if (localStorage.getItem(keyName)) {
+        localStorage.removeItem(keyName);
+    }
+    element.innerHTML = "";
+}
+function removeTask(li, activeTasksList, completedTasklist) {
+    var removeButton = document.createElement("button");
+    removeButton.textContent = "Remove";
+    li.appendChild(removeButton);
+    removeButton.addEventListener("click", function (event) {
+        var _a;
+        event.stopPropagation();
+        var clickedButton = event.target;
+        (_a = clickedButton.parentElement) === null || _a === void 0 ? void 0 : _a.remove();
+        updateStorage(activeTasksList, completedTasklist);
+    });
+}
+function clearAllButton(activeTasksList, completedTasklist) {
+    var clearAllButton = document.querySelector(".clear-all-btn");
+    clearAllButton === null || clearAllButton === void 0 ? void 0 : clearAllButton.addEventListener("click", function () {
+        removeItemAndUpdatePage(activeTasksList, "activeTasks");
+        removeItemAndUpdatePage(completedTasklist, "completedTasks");
+    });
+}
 function initTaskLogic() {
     var input = document.querySelector(".input-task-field");
     var activeTasksList = document.querySelector(".active-tasks");
@@ -103,5 +128,6 @@ function initTaskLogic() {
         return;
     loadTasksFromStorage(activeTasksList, completedTasklist);
     handleInputEnter(input, activeTasksList, completedTasklist);
+    clearAllButton(activeTasksList, completedTasklist);
 }
 initTaskLogic();

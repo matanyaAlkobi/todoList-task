@@ -11,6 +11,11 @@ function buildPageStructure() {
     var title = document.createElement("h2");
     title.textContent = "My Tasks";
     todoSection.appendChild(title);
+    // Button to clear all tasks
+    var clearAllButton = document.createElement("button");
+    clearAllButton.textContent = "Clear All";
+    clearAllButton.classList.add("clear-all-btn");
+    todoSection.appendChild(clearAllButton);
     // Active tasks section
     var activeTitle = document.createElement("h3");
     activeTitle.textContent = "Active Tasks";
@@ -20,13 +25,17 @@ function buildPageStructure() {
     todoSection.appendChild(activeTasksList);
     // input task section
     var inputDiv = document.createElement("div");
-    inputDiv.classList.add("input-task");
-    inputDiv.innerHTML = "<input id=\"task-input\" class=\"input-task-field\" type=\"text\" placeholder=\"enter a new task\" />";
+    var inputField = document.createElement("input");
+    inputField.id = "task-input";
+    inputField.classList.add("input-task-field");
+    inputField.type = "text";
+    inputField.placeholder = "enter a new task";
+    inputDiv.appendChild(inputField);
     todoSection.appendChild(inputDiv);
-    // comleted  tasks section
-    var comletedTitle = document.createElement("h3");
-    comletedTitle.textContent = "Completed Tasks";
-    todoSection.appendChild(comletedTitle);
+    // completed  tasks section
+    var completedTitle = document.createElement("h3");
+    completedTitle.textContent = "Completed Tasks";
+    todoSection.appendChild(completedTitle);
     var completedTasklist = createTaskList();
     completedTasklist.classList.add("completed-tasks");
     todoSection.appendChild(completedTasklist);
