@@ -113,10 +113,16 @@ function removeTask(li, activeTasksList, completedTasklist) {
         updateStorage(activeTasksList, completedTasklist);
     });
 }
-function clearAllButton(activeTasksList, completedTasklist) {
+function setupClearAllTasksButton(activeTasksList, completedTasklist) {
     var clearAllButton = document.querySelector(".clear-all-btn");
     clearAllButton === null || clearAllButton === void 0 ? void 0 : clearAllButton.addEventListener("click", function () {
         removeItemAndUpdatePage(activeTasksList, "activeTasks");
+        removeItemAndUpdatePage(completedTasklist, "completedTasks");
+    });
+}
+function setupDeleteCompletedTasksButton(completedTasklist) {
+    var deleteCompletedTasksButton = document.querySelector(".delete-completed-tasks-btn");
+    deleteCompletedTasksButton === null || deleteCompletedTasksButton === void 0 ? void 0 : deleteCompletedTasksButton.addEventListener("click", function () {
         removeItemAndUpdatePage(completedTasklist, "completedTasks");
     });
 }
@@ -128,6 +134,7 @@ function initTaskLogic() {
         return;
     loadTasksFromStorage(activeTasksList, completedTasklist);
     handleInputEnter(input, activeTasksList, completedTasklist);
-    clearAllButton(activeTasksList, completedTasklist);
+    setupClearAllTasksButton(activeTasksList, completedTasklist);
+    setupDeleteCompletedTasksButton(completedTasklist);
 }
 initTaskLogic();

@@ -33,9 +33,16 @@ function buildPageStructure() {
     inputDiv.appendChild(inputField);
     todoSection.appendChild(inputDiv);
     // completed  tasks section
+    //completed  tasks title
     var completedTitle = document.createElement("h3");
     completedTitle.textContent = "Completed Tasks";
     todoSection.appendChild(completedTitle);
+    //clear completed tasks buttun
+    var deleteCompletedTasksButton = document.createElement("button");
+    deleteCompletedTasksButton.textContent = "Delete Completed Tasks";
+    deleteCompletedTasksButton.classList.add("delete-completed-tasks-btn");
+    todoSection.appendChild(deleteCompletedTasksButton);
+    // list of comleted  tasks
     var completedTasklist = createTaskList();
     completedTasklist.classList.add("completed-tasks");
     todoSection.appendChild(completedTasklist);

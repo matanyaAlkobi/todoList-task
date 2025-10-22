@@ -37,12 +37,21 @@ function buildPageStructure(): void {
   inputField.type = "text";
   inputField.placeholder = "enter a new task";
   inputDiv.appendChild(inputField);
-  todoSection.appendChild(inputDiv)
+  todoSection.appendChild(inputDiv);
 
   // completed  tasks section
+
+  //completed  tasks title
   const completedTitle = document.createElement("h3");
   completedTitle.textContent = "Completed Tasks";
   todoSection.appendChild(completedTitle);
+
+  //clear completed tasks buttun
+  const deleteCompletedTasksButton = document.createElement("button");
+  deleteCompletedTasksButton.textContent = "Delete Completed Tasks";
+  deleteCompletedTasksButton.classList.add("delete-completed-tasks-btn");
+  todoSection.appendChild(deleteCompletedTasksButton);
+  // list of comleted  tasks
   const completedTasklist = createTaskList();
   completedTasklist.classList.add("completed-tasks");
   todoSection.appendChild(completedTasklist);

@@ -155,13 +155,22 @@ function removeTask(
   });
 }
 
-function clearAllButton(
+function setupClearAllTasksButton(
   activeTasksList: HTMLUListElement,
   completedTasklist: HTMLUListElement
 ) {
   const clearAllButton = document.querySelector(".clear-all-btn");
   clearAllButton?.addEventListener("click", () => {
     removeItemAndUpdatePage(activeTasksList, "activeTasks");
+    removeItemAndUpdatePage(completedTasklist, "completedTasks");
+  });
+}
+
+function setupDeleteCompletedTasksButton(completedTasklist: HTMLUListElement) {
+  const deleteCompletedTasksButton = document.querySelector(
+    ".delete-completed-tasks-btn"
+  );
+  deleteCompletedTasksButton?.addEventListener("click", () => {
     removeItemAndUpdatePage(completedTasklist, "completedTasks");
   });
 }
@@ -176,7 +185,8 @@ function initTaskLogic() {
   if (!input || !activeTasksList || !completedTasklist) return;
   loadTasksFromStorage(activeTasksList, completedTasklist);
   handleInputEnter(input, activeTasksList, completedTasklist);
-  clearAllButton(activeTasksList, completedTasklist);
+  setupClearAllTasksButton(activeTasksList, completedTasklist);
+  setupDeleteCompletedTasksButton(completedTasklist);
 }
 
 initTaskLogic();
