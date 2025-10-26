@@ -126,6 +126,38 @@ function setupDeleteCompletedTasksButton(completedTasklist) {
         removeItemAndUpdatePage(completedTasklist, "completedTasks");
     });
 }
+function setupDragAndDrop(activeTasksList, completedTasklist) {
+    new Sortable(activeTasksList, {
+        group: "tasks",
+        animation: 150,
+        onEnd: function (e) {
+            var draggingItem = e.item;
+            var checkbox = draggingItem.querySelector("input[type='checkbox']");
+            if (draggingItem.parentElement === completedTasklist) {
+                checkbox.checked = true;
+                draggingItem.classList.add("completed");
+            }
+            else if (draggingItem.parentElement === activeTasksList) {
+            }
+            updateStorage(activeTasksList, completedTasklist);
+        },
+    });
+    new Sortable(completedTasklist, {
+        group: "tasks",
+        animation: 150,
+        onEnd: function (e) {
+            var draggingItem = e.item;
+            var checkbox = draggingItem.querySelector("input[type='checkbox']");
+            setTimeout(function () {
+                if (draggingItem.parentElement === activeTasksList) {
+                    checkbox.checked = false;
+                    draggingItem.classList.remove("completed");
+                }
+                updateStorage(activeTasksList, completedTasklist);
+            }, 0);
+        },
+    });
+}
 function initTaskLogic() {
     var input = document.querySelector(".input-task-field");
     var activeTasksList = document.querySelector(".active-tasks");
@@ -136,5 +168,6 @@ function initTaskLogic() {
     handleInputEnter(input, activeTasksList, completedTasklist);
     setupClearAllTasksButton(activeTasksList, completedTasklist);
     setupDeleteCompletedTasksButton(completedTasklist);
+    setupDragAndDrop(activeTasksList, completedTasklist);
 }
 initTaskLogic();

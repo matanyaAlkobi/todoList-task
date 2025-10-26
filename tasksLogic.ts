@@ -175,6 +175,47 @@ function setupDeleteCompletedTasksButton(completedTasklist: HTMLUListElement) {
   });
 }
 
+function setupDragAndDrop(
+  activeTasksList: HTMLUListElement,
+  completedTasklist: HTMLUListElement
+) {
+  new Sortable(activeTasksList, {
+    group: "tasks",
+    animation: 150,
+    onEnd: (e) => {
+      const draggingItem = e.item as HTMLLIElement;
+      const checkbox = draggingItem.querySelector<HTMLInputElement>(
+        "input[type='checkbox']"
+      );
+
+      if (draggingItem.parentElement === completedTasklist) {
+        checkbox!.checked = true;
+        draggingItem.classList.add("completed");
+      } else if (draggingItem.parentElement === activeTasksList) {
+      }
+      updateStorage(activeTasksList, completedTasklist);
+    },
+  });
+
+  new Sortable(completedTasklist, {
+    group: "tasks",
+    animation: 150,
+    onEnd: (e) => {
+      const draggingItem = e.item as HTMLLIElement;
+      const checkbox = draggingItem.querySelector<HTMLInputElement>(
+        "input[type='checkbox']"
+      );
+      setTimeout(() => {
+        if (draggingItem.parentElement === activeTasksList) {
+          checkbox!.checked = false;
+          draggingItem.classList.remove("completed");
+        }
+        updateStorage(activeTasksList, completedTasklist);
+      }, 0);
+    },
+  });
+}
+
 function initTaskLogic() {
   const input = document.querySelector<HTMLInputElement>(".input-task-field");
   const activeTasksList =
@@ -187,6 +228,7 @@ function initTaskLogic() {
   handleInputEnter(input, activeTasksList, completedTasklist);
   setupClearAllTasksButton(activeTasksList, completedTasklist);
   setupDeleteCompletedTasksButton(completedTasklist);
+  setupDragAndDrop(activeTasksList, completedTasklist);
 }
 
 initTaskLogic();
