@@ -53,7 +53,11 @@ function createTaskElement(
 
   li.appendChild(checkbox);
   li.appendChild(text);
-  removeTask(li, activeTasksList, completedTasklist);
+  const div = document.createElement("div");
+  div.classList.add("task-buttond");
+  editButtun(li, div);
+  removeTask(li, activeTasksList, completedTasklist, div);
+  li.appendChild(div);
   if (!completed) {
     activeTasksList.appendChild(li);
   } else {
@@ -108,27 +112,43 @@ function editTask(li: HTMLLIElement): void {
   li.addEventListener("dblclick", () => {
     const text = li.querySelector("span");
     if (!text) return;
-    const originalText = text.textContent;
+    enableEditing(text)
+  });
+}
 
-    text.contentEditable = "true";
-    text.focus();
+function enableEditing(text: HTMLSpanElement) {
+  const originalText = text.textContent;
 
-    const keyHandler = (e: KeyboardEvent) => {
-      if (e.key === "Enter") {
-        text.contentEditable = "false";
-        text.removeEventListener("keydown", keyHandler);
-        updateStorage(
-          document.querySelector(".active-tasks")!,
-          document.querySelector(".completed-tasks")!
-        );
-      } else if (e.key === "Escape") {
-        text.textContent = originalText;
-        text.contentEditable = "false";
-        text.removeEventListener("keydown", keyHandler);
-      }
-    };
+  text.contentEditable = "true";
+  text.focus();
 
-    text.addEventListener("keydown", keyHandler);
+  const keyHandler = (e: KeyboardEvent) => {
+    if (e.key === "Enter") {
+      text.contentEditable = "false";
+      text.removeEventListener("keydown", keyHandler);
+      updateStorage(
+        document.querySelector(".active-tasks")!,
+        document.querySelector(".completed-tasks")!
+      );
+    } else if (e.key === "Escape") {
+      text.textContent = originalText;
+      text.contentEditable = "false";
+      text.removeEventListener("keydown", keyHandler);
+    }
+  };
+
+  text.addEventListener("keydown", keyHandler);
+}
+
+function editButtun(li: HTMLLIElement, div: HTMLDivElement) {
+  const editBtn = document.createElement("button");
+  editBtn.textContent = "edit";
+  editBtn.classList.add("edit-btn");
+  div.appendChild(editBtn);
+  const text = li.querySelector("span");
+  editBtn.addEventListener("click", () => {
+    if (!text) return;
+    enableEditing(text)
   });
 }
 
@@ -142,11 +162,12 @@ function removeItemAndUpdatePage(element: HTMLElement, keyName: string) {
 function removeTask(
   li: HTMLLIElement,
   activeTasksList: HTMLUListElement,
-  completedTasklist: HTMLUListElement
+  completedTasklist: HTMLUListElement,
+  div: HTMLDivElement
 ) {
   const removeButton = document.createElement("button");
   removeButton.textContent = "Remove";
-  li.appendChild(removeButton);
+  div.appendChild(removeButton);
   removeButton.addEventListener("click", (event) => {
     event.stopPropagation();
     const clickedButton = event.target as HTMLElement;

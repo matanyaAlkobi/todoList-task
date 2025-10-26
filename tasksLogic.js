@@ -31,7 +31,11 @@ function createTaskElement(activeTasksList, completedTasklist, textValue, comple
     text.textContent = textValue;
     li.appendChild(checkbox);
     li.appendChild(text);
-    removeTask(li, activeTasksList, completedTasklist);
+    var div = document.createElement("div");
+    div.classList.add("task-buttond");
+    editButtun(li, div);
+    removeTask(li, activeTasksList, completedTasklist, div);
+    li.appendChild(div);
     if (!completed) {
         activeTasksList.appendChild(li);
     }
@@ -77,22 +81,37 @@ function editTask(li) {
         var text = li.querySelector("span");
         if (!text)
             return;
-        var originalText = text.textContent;
-        text.contentEditable = "true";
-        text.focus();
-        var keyHandler = function (e) {
-            if (e.key === "Enter") {
-                text.contentEditable = "false";
-                text.removeEventListener("keydown", keyHandler);
-                updateStorage(document.querySelector(".active-tasks"), document.querySelector(".completed-tasks"));
-            }
-            else if (e.key === "Escape") {
-                text.textContent = originalText;
-                text.contentEditable = "false";
-                text.removeEventListener("keydown", keyHandler);
-            }
-        };
-        text.addEventListener("keydown", keyHandler);
+        enableEditing(text);
+    });
+}
+function enableEditing(text) {
+    var originalText = text.textContent;
+    text.contentEditable = "true";
+    text.focus();
+    var keyHandler = function (e) {
+        if (e.key === "Enter") {
+            text.contentEditable = "false";
+            text.removeEventListener("keydown", keyHandler);
+            updateStorage(document.querySelector(".active-tasks"), document.querySelector(".completed-tasks"));
+        }
+        else if (e.key === "Escape") {
+            text.textContent = originalText;
+            text.contentEditable = "false";
+            text.removeEventListener("keydown", keyHandler);
+        }
+    };
+    text.addEventListener("keydown", keyHandler);
+}
+function editButtun(li, div) {
+    var editBtn = document.createElement("button");
+    editBtn.textContent = "edit";
+    editBtn.classList.add("edit-btn");
+    div.appendChild(editBtn);
+    var text = li.querySelector("span");
+    editBtn.addEventListener("click", function () {
+        if (!text)
+            return;
+        enableEditing(text);
     });
 }
 function removeItemAndUpdatePage(element, keyName) {
@@ -101,10 +120,10 @@ function removeItemAndUpdatePage(element, keyName) {
     }
     element.innerHTML = "";
 }
-function removeTask(li, activeTasksList, completedTasklist) {
+function removeTask(li, activeTasksList, completedTasklist, div) {
     var removeButton = document.createElement("button");
     removeButton.textContent = "Remove";
-    li.appendChild(removeButton);
+    div.appendChild(removeButton);
     removeButton.addEventListener("click", function (event) {
         var _a;
         event.stopPropagation();

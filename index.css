@@ -41,6 +41,7 @@ ul {
 li {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: 0.5rem;
   background-color: #f0f0f0;
   padding: 0.5rem 1rem;
@@ -55,7 +56,6 @@ li:hover {
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
   cursor: pointer;
 }
-
 
 li.completed span {
   text-decoration: line-through;
@@ -110,15 +110,28 @@ button:hover {
 }
 
 li button {
-  margin-left: auto;
   background-color: #f8f9fa;
   color: #333;
   font-size: 0.85rem;
   padding: 0.3rem 0.6rem;
   text-decoration: none;
-  display: inline-block;
+  border-radius: 0.4rem;
+}
+
+.task-buttond {
+  display: flex;
+  gap: 0.4rem;
+  margin-left: auto;
 }
 
 li button:hover {
   background-color: #e9ecef;
+}
+
+.edit-btn{
+  opacity: 0;
+}
+
+li:hover .edit-btn{
+  opacity: 1;
 }
