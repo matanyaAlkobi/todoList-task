@@ -1,3 +1,4 @@
+// Loads saved tasks from localStorage and creates their elements in the UI
 function loadTasksFromStorage(activeTasksList, completedTasklist) {
     var activeTasks = JSON.parse(localStorage.getItem("activeTasks") || "[]");
     var completedTasks = JSON.parse(localStorage.getItem("completedTasks") || "[]");
@@ -8,11 +9,10 @@ function loadTasksFromStorage(activeTasksList, completedTasklist) {
         createTaskElement(activeTasksList, completedTasklist, task, true);
     });
 }
-// Adds an Enter key listener to the input
-// On Enter, adds a new li to the provided ul and clears the input
+// Adds an event listener to the input field
+// Creates a new task when the user presses Enter
 function handleInputEnter(input, activeTasksList, completedTasklist) {
     input.addEventListener("keydown", function (e) {
-        console.log(e.key);
         if (e.key === "Enter" && input.value.trim() !== "") {
             var dataFromStorage = JSON.parse(localStorage.getItem("activeTasks") || "[]");
             dataFromStorage.push(input.value.trim());
@@ -22,6 +22,7 @@ function handleInputEnter(input, activeTasksList, completedTasklist) {
         }
     });
 }
+// Creates a new task <li> element with checkbox, text, edit, and remove buttons
 function createTaskElement(activeTasksList, completedTasklist, textValue, completed) {
     if (completed === void 0) { completed = false; }
     var li = document.createElement("li");
@@ -50,6 +51,7 @@ function createTaskElement(activeTasksList, completedTasklist, textValue, comple
         updateStorage(activeTasksList, completedTasklist);
     });
 }
+// Moves a task between active and completed lists based on its checkbox state
 function updateTaskStatus(activeTasksList, completedTasklist, completed, li) {
     if (completed) {
         li.classList.add("completed");
@@ -62,6 +64,7 @@ function updateTaskStatus(activeTasksList, completedTasklist, completed, li) {
         activeTasksList.appendChild(li);
     }
 }
+// Updates localStorage with the current active and completed tasks
 function updateStorage(activeTasksList, completedTasklist) {
     var activeTasks = [];
     var completedTasks = [];
@@ -76,6 +79,7 @@ function updateStorage(activeTasksList, completedTasklist) {
     localStorage.setItem("activeTasks", JSON.stringify(activeTasks));
     localStorage.setItem("completedTasks", JSON.stringify(completedTasks));
 }
+// Enables editing a task’s text on double-click
 function editTask(li) {
     li.addEventListener("dblclick", function () {
         var text = li.querySelector("span");
@@ -84,6 +88,7 @@ function editTask(li) {
         enableEditing(text);
     });
 }
+// Makes the task text editable and handles Enter (save) / Escape (cancel) keys
 function enableEditing(text) {
     var originalText = text.textContent;
     text.contentEditable = "true";
@@ -102,6 +107,7 @@ function enableEditing(text) {
     };
     text.addEventListener("keydown", keyHandler);
 }
+// Adds an edit button to a task and connects it to the edit logic
 function editButtun(li, div) {
     var editBtn = document.createElement("button");
     editBtn.textContent = "edit";
@@ -114,24 +120,26 @@ function editButtun(li, div) {
         enableEditing(text);
     });
 }
+// Removes a specific localStorage key and clears the related task list on the page
 function removeItemAndUpdatePage(element, keyName) {
     if (localStorage.getItem(keyName)) {
         localStorage.removeItem(keyName);
     }
     element.innerHTML = "";
 }
+// Adds a remove button to a task and updates storage after deletion
 function removeTask(li, activeTasksList, completedTasklist, div) {
     var removeButton = document.createElement("button");
     removeButton.textContent = "Remove";
     div.appendChild(removeButton);
     removeButton.addEventListener("click", function (event) {
-        var _a;
         event.stopPropagation();
-        var clickedButton = event.target;
-        (_a = clickedButton.parentElement) === null || _a === void 0 ? void 0 : _a.remove();
+        var liToRemove = event.target.closest("li");
+        liToRemove === null || liToRemove === void 0 ? void 0 : liToRemove.remove();
         updateStorage(activeTasksList, completedTasklist);
     });
 }
+// Adds a “Clear All” button that removes all active and completed tasks
 function setupClearAllTasksButton(activeTasksList, completedTasklist) {
     var clearAllButton = document.querySelector(".clear-all-btn");
     clearAllButton === null || clearAllButton === void 0 ? void 0 : clearAllButton.addEventListener("click", function () {
@@ -139,12 +147,14 @@ function setupClearAllTasksButton(activeTasksList, completedTasklist) {
         removeItemAndUpdatePage(completedTasklist, "completedTasks");
     });
 }
+// Adds a button that deletes only completed tasks
 function setupDeleteCompletedTasksButton(completedTasklist) {
     var deleteCompletedTasksButton = document.querySelector(".delete-completed-tasks-btn");
     deleteCompletedTasksButton === null || deleteCompletedTasksButton === void 0 ? void 0 : deleteCompletedTasksButton.addEventListener("click", function () {
         removeItemAndUpdatePage(completedTasklist, "completedTasks");
     });
 }
+// Enables drag-and-drop sorting and movement between lists, updating storage accordingly
 function setupDragAndDrop(activeTasksList, completedTasklist) {
     new Sortable(activeTasksList, {
         group: "tasks",
@@ -177,6 +187,7 @@ function setupDragAndDrop(activeTasksList, completedTasklist) {
         },
     });
 }
+// Initializes the entire task logic: input handling, loading from storage, buttons, and drag-and-drop
 function initTaskLogic() {
     var input = document.querySelector(".input-task-field");
     var activeTasksList = document.querySelector(".active-tasks");

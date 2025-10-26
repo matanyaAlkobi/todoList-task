@@ -1,3 +1,4 @@
+// Loads saved tasks from localStorage and creates their elements in the UI
 function loadTasksFromStorage(
   activeTasksList: HTMLUListElement,
   completedTasklist: HTMLUListElement
@@ -16,15 +17,14 @@ function loadTasksFromStorage(
   });
 }
 
-// Adds an Enter key listener to the input
-// On Enter, adds a new li to the provided ul and clears the input
+// Adds an event listener to the input field
+// Creates a new task when the user presses Enter
 function handleInputEnter(
   input: HTMLInputElement,
   activeTasksList: HTMLUListElement,
   completedTasklist: HTMLUListElement
 ): void {
   input.addEventListener("keydown", (e: KeyboardEvent) => {
-    console.log(e.key);
     if (e.key === "Enter" && input.value.trim() !== "") {
       const dataFromStorage = JSON.parse(
         localStorage.getItem("activeTasks") || "[]"
@@ -38,6 +38,7 @@ function handleInputEnter(
   });
 }
 
+// Creates a new task <li> element with checkbox, text, edit, and remove buttons
 function createTaskElement(
   activeTasksList: HTMLUListElement,
   completedTasklist: HTMLUListElement,
@@ -73,6 +74,7 @@ function createTaskElement(
   });
 }
 
+// Moves a task between active and completed lists based on its checkbox state
 function updateTaskStatus(
   activeTasksList: HTMLUListElement,
   completedTasklist: HTMLUListElement,
@@ -90,6 +92,7 @@ function updateTaskStatus(
   }
 }
 
+// Updates localStorage with the current active and completed tasks
 function updateStorage(
   activeTasksList: HTMLUListElement,
   completedTasklist: HTMLUListElement
@@ -108,14 +111,16 @@ function updateStorage(
   localStorage.setItem("completedTasks", JSON.stringify(completedTasks));
 }
 
+// Enables editing a task’s text on double-click
 function editTask(li: HTMLLIElement): void {
   li.addEventListener("dblclick", () => {
     const text = li.querySelector("span");
     if (!text) return;
-    enableEditing(text)
+    enableEditing(text);
   });
 }
 
+// Makes the task text editable and handles Enter (save) / Escape (cancel) keys
 function enableEditing(text: HTMLSpanElement) {
   const originalText = text.textContent;
 
@@ -140,6 +145,7 @@ function enableEditing(text: HTMLSpanElement) {
   text.addEventListener("keydown", keyHandler);
 }
 
+// Adds an edit button to a task and connects it to the edit logic
 function editButtun(li: HTMLLIElement, div: HTMLDivElement) {
   const editBtn = document.createElement("button");
   editBtn.textContent = "edit";
@@ -148,10 +154,11 @@ function editButtun(li: HTMLLIElement, div: HTMLDivElement) {
   const text = li.querySelector("span");
   editBtn.addEventListener("click", () => {
     if (!text) return;
-    enableEditing(text)
+    enableEditing(text);
   });
 }
 
+// Removes a specific localStorage key and clears the related task list on the page
 function removeItemAndUpdatePage(element: HTMLElement, keyName: string) {
   if (localStorage.getItem(keyName)) {
     localStorage.removeItem(keyName);
@@ -159,6 +166,7 @@ function removeItemAndUpdatePage(element: HTMLElement, keyName: string) {
   element.innerHTML = "";
 }
 
+// Adds a remove button to a task and updates storage after deletion
 function removeTask(
   li: HTMLLIElement,
   activeTasksList: HTMLUListElement,
@@ -170,12 +178,13 @@ function removeTask(
   div.appendChild(removeButton);
   removeButton.addEventListener("click", (event) => {
     event.stopPropagation();
-    const clickedButton = event.target as HTMLElement;
-    clickedButton.parentElement?.remove();
+    const liToRemove = (event.target as HTMLElement).closest("li")
+    liToRemove?.remove()
     updateStorage(activeTasksList, completedTasklist);
   });
 }
 
+// Adds a “Clear All” button that removes all active and completed tasks
 function setupClearAllTasksButton(
   activeTasksList: HTMLUListElement,
   completedTasklist: HTMLUListElement
@@ -187,6 +196,7 @@ function setupClearAllTasksButton(
   });
 }
 
+// Adds a button that deletes only completed tasks
 function setupDeleteCompletedTasksButton(completedTasklist: HTMLUListElement) {
   const deleteCompletedTasksButton = document.querySelector(
     ".delete-completed-tasks-btn"
@@ -196,6 +206,7 @@ function setupDeleteCompletedTasksButton(completedTasklist: HTMLUListElement) {
   });
 }
 
+// Enables drag-and-drop sorting and movement between lists, updating storage accordingly
 function setupDragAndDrop(
   activeTasksList: HTMLUListElement,
   completedTasklist: HTMLUListElement
@@ -237,6 +248,7 @@ function setupDragAndDrop(
   });
 }
 
+// Initializes the entire task logic: input handling, loading from storage, buttons, and drag-and-drop
 function initTaskLogic() {
   const input = document.querySelector<HTMLInputElement>(".input-task-field");
   const activeTasksList =
