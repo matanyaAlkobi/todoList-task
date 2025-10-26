@@ -166,8 +166,6 @@ function setupDragAndDrop(activeTasksList, completedTasklist) {
                 checkbox.checked = true;
                 draggingItem.classList.add("completed");
             }
-            else if (draggingItem.parentElement === activeTasksList) {
-            }
             updateStorage(activeTasksList, completedTasklist);
         },
     });
